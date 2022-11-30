@@ -9,8 +9,8 @@ function App() {
   const [count, setCount] = useState(0)
 
   return (
-    <Box style={{margin: 20, alignItems: 'center'}} className="App">
-      <Stack spacing={1}>
+    <Box style={{margin:'2%', alignItems: 'center'}} className="App">
+      <Stack spacing={3}>
         <ControlPanel/>
         <ImagePreview/>
       </Stack>
