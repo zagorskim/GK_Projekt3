@@ -11,6 +11,7 @@ import {
   canvas3Data,
   canvas4context,
   canvas4Data,
+  paletteCount,
 } from "../state/CanvasState";
 
 export default function ControlPanel() {
@@ -22,7 +23,7 @@ export default function ControlPanel() {
   const [c2d, setC2d] = useRecoilState(canvas2Data);
   const [c3d, setC3d] = useRecoilState(canvas3Data);
   const [c4d, setC4d] = useRecoilState(canvas4Data);
-  const [paletteCount, setPaletteCount] = [0, 0];
+  const [colorCount, setColorCount] = useRecoilState(paletteCount);
   const inputRef = useRef(null);
 
   const loadButtonHandler = () => {
@@ -95,12 +96,12 @@ export default function ControlPanel() {
           </b>
           <Slider
             defaultValue={2}
-            getAriaValueText={paletteCount}
             valueLabelDisplay="auto"
             step={1}
             marks 
             min={2}
             max={20}
+            onChange={(e) => setColorCount(e.target.value)}
           />
         </Stack>
       </Stack>

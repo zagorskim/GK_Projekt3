@@ -33,6 +33,7 @@ export default function ImagePreview () {
         canvas4 = document.getElementById('canvas4');
         setc4c(canvas4.getContext('2d'))
     }, [])
+
     useEffect(() => {
         if(c1d && c2d && c3d && c4d && id1)
         {
@@ -52,17 +53,17 @@ export default function ImagePreview () {
         <Box>
             <Stack spacing={3}>
                 <Box style={{padding:'2%', backgroundColor: '#47515d', borderRadius:20}}>
-                    <canvas id='canvas1' style={{width: '100%', backgroundColor: 'white'}}>
+                    <canvas id='canvas1' style={{width: '20%', backgroundColor: 'white'}}>
 
                     </canvas>
                 </Box>
                 <Box style={{padding:'2%', backgroundColor: '#47515d', borderRadius:20}}>
-                    <Stack direction='horizontal'>
+                    <Stack direction='row'>
                             <Propagation/>
                             <Popularity/>
                             <Kmeans/>
                     </Stack>
-                    <Stack direction='horizontal'>
+                    <Stack direction='row'>
                             <canvas id='canvas2' style={{marginTop:'1%', marginRight: '1%', width: '32%', backgroundColor: 'white'}}>
 
                             </canvas>
@@ -74,9 +75,6 @@ export default function ImagePreview () {
                             </canvas>
                     </Stack>
                 </Box>
-                <Button onClick={test}>
-                    Test Button
-                </Button>
             </Stack>
         </Box>
     )

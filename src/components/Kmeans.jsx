@@ -6,9 +6,11 @@ import {
   Slider,
   Stack,
 } from "@mui/material";
+import { useRecoilState } from "recoil";
+import { kValue } from "../state/CanvasState";
 
 export default function Kmeans() {
-  const [k, setk] = [0, 0];
+  const [k, setk] = useRecoilState(kValue);
 
   return (
     <Stack
@@ -30,12 +32,12 @@ export default function Kmeans() {
       <label style={{ textAlign: "center" }}>Epsilon value</label>
       <Slider
         defaultValue={10}
-        getAriaValueText={k}
         valueLabelDisplay="auto"
         step={5}
         marks
         min={1}
         max={100}
+        onChange={(e) => {setk(e.target.value)}}
       />
     </Stack>
   );
