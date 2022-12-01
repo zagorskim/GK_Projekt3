@@ -58,7 +58,7 @@ export const imageData1 = selector({
     },
 });
 
-// tbd: implement algorithms inside selectors using state made from config set in controls
+// tbd: implement algorithms inside selectors using state made from config set in controls, order of pixels in arr to be solved 
 export const imageData2 = selector({
   key: "imageData2",
   get: ({ get }) => {
@@ -70,7 +70,7 @@ export const imageData2 = selector({
       for (let i = 0; i < context.canvas.height * 4; i++)
         for (let j = 0; j < context.canvas.width * 4; j++) {
           id.data[i * context.canvas.width + j] =
-            arr[i * context.canvas.width + j] - 100;
+            arr[i * context.canvas.width + j];
         }
     }
     return id;
