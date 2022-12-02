@@ -25,9 +25,9 @@ export const canvas4context = atom({
   default: null,
 });
 
-export const kValue = atom({
-  key: "kValue",
-  default: 11,
+export const epsilonValue = atom({
+  key: "epsilonValue",
+  default: 12,
 });
 
 export const paletteCount = atom({
@@ -143,8 +143,8 @@ export const imageData3 = selector({
       let colorCount = get(paletteCount);
       for (let i = 0; i < context.canvas.height * 4; i++)
         for (let j = 0; j < context.canvas.width; j++) {
-          // choice of displayable pixel based on each channel separately or mutually 
-          // (e.g. using min square error)??? assuming hardware usage (ability to display 
+          // choice of displayable pixel based on each channel separately or mutually
+          // (e.g. using min square error)??? assuming hardware usage (ability to display
           // colors using 3 different diodes decided to treat channels separately)
           if (!arr[i * context.canvas.width * 4 + j]) continue;
           let color = popTable[0];
@@ -192,12 +192,81 @@ export const imageData3 = selector({
 export const imageData4 = selector({
   key: "imageData4",
   get: ({ get }) => {
-    let baseContext = get(canvas1context);
     let context = get(canvas4context);
+    let popTable = get(popularityTable);
     let id = null;
-    if (context && baseContext) {
+    if (context && popTable.length) {
       id = context.createImageData(context.canvas.width, context.canvas.height);
       let arr = get(canvas1Data);
+      const colorCount = get(paletteCount);
+      const eps = get(epsilonValue);
+      const popTable = get(popularityTable);
+
+      let centroids = [];
+      for (let i = 0; i < colorCount; i++) {
+        console.log(Math.floor(popTable.length / 2 - (popTable.length / 2) / (i + 1)))
+        centroids[i] = popTable[Math.floor(popTable.length / 2 - (popTable.length / 2) / (i + 1))]; // first choice heuristic (most popular towards 'half popular' with more density close to helf of an array)
+      }
+      let groups = [[]];
+      // do {
+      //   groups = [[]];
+      //   let distances = [[]];
+      //   let maxDist = 0;
+      //   for (let i = 0; i < centroids.length; i++) {
+      //     for (let j = 0; j < arr.length; j += 4) {
+      //       distances[i][j] = Math.sqrt(
+      //         Math.pow(centroids[i].r - arr[j], 2) +
+      //           Math.pow(centroids[i].g - arr[j + 1], 2) +
+      //           Math.pow(centroids[i].b - arr[j + 2], 2)
+      //       ); // weighs for middle calculation expressed in square root error
+      //       if (distances[i][j] > maxDist) maxDist = distances[i][j];
+      //     }
+      //   }
+
+      //   for (let i = 0; i < distances[0].length; i += 4) {
+      //     let minIndex = 0;
+      //     for (let j = 0; j < distances.length; j++) {
+      //       if (distances[j][i / 4] < distances[minIndex][i / 4]) minIndex = j;
+      //     }
+      //     groups[minIndex][groups[minIndex].length] = i;
+      //   }
+        
+      //   let coords = [];
+      //   for(let i = 0; i < groups.length; i++) {
+      //     let sumR = 0;
+      //     let sumG = 0;
+      //     let sumB = 0;
+      //     for(let j = 0; j < groups[0].length; j++) {
+      //       sumR += arr[groups[i][j]];
+      //       sumG += arr[groups[i][j] + 1];
+      //       sumB += arr[groups[i][j] + 2];
+      //     }
+      //     coords[i] = [sumR / groups[i].length, sumG / groups[i].length, sumB / groups[i].length];
+      //   }
+
+      //   for(let i = 0; i < coords[i]; i++) {
+      //     let minIndex = 0;
+      //     let minDist = 1000;
+      //     for(let j = 0; j < groups[i].length; j++)
+      //       if(Math.sqrt(Math.pow(arr[groups[i][j]] - coords[i][0], 2) + Math.pow(arr[groups[i][j]] - coords[i][0], 2) + Math.pow(arr[groups[i][j]] - coords[i][0], 2)) < minDist) {
+      //         minDist = Math.sqrt(Math.pow(arr[groups[i][j]] - coords[i][0], 2) + Math.pow(arr[groups[i][j]] - coords[i][0], 2) + Math.pow(arr[groups[i][j]] - coords[i][0], 2));
+      //         minIndex[i] = j; 
+      //       }
+      //     centroids[i] = {r: arr[groups[i][minIndex[0]]], g: arr[groups[i][minIndex[0]] + 1],b: arr[groups[i][minIndex[0]] + 2]}
+      //   }
+      // } while (maxDist > eps);
+
+      // for(let i = 0; i < arr.length; i += 4) {
+      //   for(let k = 0; k < groups; k++)
+      //     for(let l = 0; l < groups[k]; l++) {
+      //       if(i == groups[k][l]) {
+      //         arr[i] = centroids[k].r;
+      //         arr[i + 1] = centroids[k].g;
+      //         arr[i + 2] = centroids[k].b;
+      //       }
+      //     }
+      // }
+
       for (let i = 0; i < context.canvas.height * 4; i++)
         for (let j = 0; j < context.canvas.width; j++) {
           id.data[i * context.canvas.width + j] = arr[i * context.canvas.width * 4 + j];

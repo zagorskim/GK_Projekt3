@@ -7,11 +7,11 @@ import {
   Stack,
 } from "@mui/material";
 import { useRecoilState } from "recoil";
-import { kValue } from "../state/CanvasState";
+import { epsilonValue } from "../state/CanvasState";
 
 export default function Kmeans() {
   
-  const [k, setk] = useRecoilState(kValue);
+  const [eps, setEps] = useRecoilState(epsilonValue);
 
   return (
     <Stack
@@ -38,7 +38,7 @@ export default function Kmeans() {
         marks
         min={1}
         max={100}
-        onChange={(e) => {setk(e.target.value)}}
+        onChange={(e) => {setEps(e.target.value)}}
       />
     </Stack>
   );

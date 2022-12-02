@@ -16,6 +16,7 @@ export default function Popularity() {
             c3c.putImageData(id3, 0, 0);
     }, [colorCount, popTable])
     
+    // control to change calculating mode to be added (counting channels mutually or separately)
     return (
         <Stack style={{padding:'2%', margin:'1%', width: '32%', backgroundColor:'#c62828', borderRadius:20}}>
             <b style={{textAlign:'center'}}><label>Palette reduced using popularity algorithm</label></b>
