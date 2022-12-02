@@ -6,12 +6,10 @@ import {
   canvas1context,
   canvas1Data,
   canvas2context,
-  canvas2Data,
   canvas3context,
-  canvas3Data,
   canvas4context,
-  canvas4Data,
   paletteCount,
+  popularityTable,
 } from "../state/CanvasState";
 
 export default function ControlPanel() {
@@ -20,9 +18,6 @@ export default function ControlPanel() {
   const [c3c, setContext3] = useRecoilState(canvas3context);
   const [c4c, setContext4] = useRecoilState(canvas4context);
   const [c1d, setC1d] = useRecoilState(canvas1Data);
-  const [c2d, setC2d] = useRecoilState(canvas2Data);
-  const [c3d, setC3d] = useRecoilState(canvas3Data);
-  const [c4d, setC4d] = useRecoilState(canvas4Data);
   const [colorCount, setColorCount] = useRecoilState(paletteCount);
   const inputRef = useRef(null);
 
@@ -46,7 +41,6 @@ export default function ControlPanel() {
   };
 
   function loadFile(fileURL, height, width) {
-    console.log(c1c);
     c1c.canvas.width = width;
     c1c.canvas.height = height;
     c2c.canvas.width = width;
@@ -65,10 +59,12 @@ export default function ControlPanel() {
       const imageData = Array.from(
         ctx.getImageData(0, 0, c1c.canvas.width, c1c.canvas.height).data
       ).map((x) => x);
-      setC1d(imageData);
-      setC2d(imageData);
-      setC3d(imageData);
-      setC4d(imageData);
+      let res = [];
+      for (let i = 0; i < height * 4; i++)
+        for (let j = 0; j < width; j++)
+          res[i * 4 * width + j] =
+            imageData[i * width + j];
+      setC1d(res);
     };
     image.src = fileURL;
   }
@@ -90,9 +86,9 @@ export default function ControlPanel() {
         <Button size="large" variant="contained" color="error">
           Transform Images
         </Button>
-        <Stack width='30%'>
+        <Stack width='40%'>
           <b style={{ textAlign: "center" }}>
-            <label>Output palette count</label>
+            <label>Output palette count (each channel separately)</label>
           </b>
           <Slider
             defaultValue={2}

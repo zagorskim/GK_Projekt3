@@ -10,6 +10,7 @@ import { useRecoilState } from "recoil";
 import { kValue } from "../state/CanvasState";
 
 export default function Kmeans() {
+  
   const [k, setk] = useRecoilState(kValue);
 
   return (

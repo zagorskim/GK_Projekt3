@@ -9,10 +9,9 @@ import {
 } from "@mui/material";
 import { useEffect } from "react";
 import { useRecoilState, useRecoilValue } from "recoil";
-import { canvas2context, canvas2Data, imageData2, paletteCount, propagationAlgorithm } from "../state/CanvasState";
+import { canvas2context, imageData2, paletteCount, propagationAlgorithm } from "../state/CanvasState";
 
 export default function Propagation() {
-  const [c2d, setC2d] = useRecoilState(canvas2Data);
   const [alg, setAlg] = useRecoilState(propagationAlgorithm);
   const [colorCount, setColorCount] = useRecoilState(paletteCount);
   const [c2c, setc2c] = useRecoilState(canvas2context);
