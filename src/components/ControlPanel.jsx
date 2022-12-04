@@ -80,13 +80,13 @@ export default function ControlPanel() {
         >
           Load Image
         </Button>
-        <Button size="large" variant="contained" color="error">
+        <Button size="large" variant="contained" color="error" disabled>
           Save Results
         </Button>
-        <Button size="large" variant="contained" color="error">
+        <Button size="large" variant="contained" color="error" disabled>
           Transform Images
         </Button>
-        <Stack width='40%'>
+        <Stack width='60%'>
           <b style={{ textAlign: "center" }}>
             <label>Output palette count (each channel separately)</label>
           </b>
@@ -96,7 +96,8 @@ export default function ControlPanel() {
             step={1}
             marks 
             min={2}
-            max={20}
+            max={60}
+            style={{marginLeft: '3%'}}
             onChange={(e) => setColorCount(e.target.value)}
           />
         </Stack>

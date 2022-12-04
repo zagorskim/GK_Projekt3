@@ -6,12 +6,23 @@ import {
   Slider,
   Stack,
 } from "@mui/material";
-import { useRecoilState } from "recoil";
-import { epsilonValue } from "../state/CanvasState";
+import { useEffect } from "react";
+import { useRecoilState, useRecoilValue } from "recoil";
+import { canvas4context, epsilonValue, imageData4, paletteCount, popularityTable } from "../state/CanvasState";
 
 export default function Kmeans() {
   
   const [eps, setEps] = useRecoilState(epsilonValue);
+  const [colorCount, setColorCount] = useRecoilState(paletteCount);
+  const [c4c, setC4c] = useRecoilState(canvas4context);
+  const [popTable, setPopTable] = useRecoilState(popularityTable);
+
+  const id4 = useRecoilValue(imageData4);
+
+  useEffect(() => {
+    if(c4c && id4)
+        c4c.putImageData(id4, 0, 0);
+}, [colorCount, popTable, eps])
 
   return (
     <Stack

@@ -41,10 +41,12 @@ export default function Propagation() {
         </label>
       </b>
       <Stack>
+      <p/>
+      <label style={{ textAlign: "center" }}>Algorithm used </label>
         <RadioGroup
           onChange={(e) => setAlg(e.target.value)}
           defaultValue={0}
-          style={{ marginTop: 20 }}
+          style={{ marginTop: 0 }}
           row
         >
           <FormControlLabel
