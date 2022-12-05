@@ -1,18 +1,21 @@
 import { Box, Stack, Button, Checkbox, RadioGroup, FormControlLabel, Radio } from "@mui/material";
-import { useEffect } from "react";
-import { useRecoilState, useRecoilValue } from "recoil";
+import { useEffect, useState } from "react";
+import { useRecoilState, useRecoilValue, useRecoilValueLoadable } from "recoil";
 import { canvas2context, paletteCount, propagationAlgorithm } from "../data/AppState";
 import { imageData2 } from "../data/PropagationData";
+import { imageData1, canvas1Data } from "./../data/AppState";
 
 export default function Propagation() {
   const [alg, setAlg] = useRecoilState(propagationAlgorithm);
   const [colorCount, setColorCount] = useRecoilState(paletteCount);
-  const [c2c, setc2c] = useRecoilState(canvas2context);
-  const id2 = useRecoilValue(imageData2);
+  const [c2c] = useRecoilState(canvas2context);
+  const [c1d, setC1d] = useRecoilState(canvas1Data);
+  const id2 = useRecoilValueLoadable(imageData2);
 
   useEffect(() => {
-    if (c2c) c2c.putImageData(id2, 0, 0);
-  }, [colorCount, alg]);
+    if (c1d && id2.state == "hasValue" && c2c)
+      if (id2.getValue()) c2c.putImageData(id2.getValue(), 0, 0);
+  }, [c1d, id2, colorCount, alg]);
 
   return (
     <Stack

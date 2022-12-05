@@ -1,7 +1,7 @@
 import { Box, Button } from "@mui/material";
 import { Stack } from "@mui/system";
 import { useEffect, useRef } from "react";
-import { useRecoilState, useRecoilValue } from "recoil";
+import { useRecoilState, useRecoilValue, useRecoilValueLoadable } from "recoil";
 import {
   canvas1Data,
   canvas1context,
@@ -26,10 +26,7 @@ export default function ImagePreview() {
   const [c3c, setc3c] = useRecoilState(canvas3context);
   const [c4c, setc4c] = useRecoilState(canvas4context);
 
-  const id1 = useRecoilValue(imageData1);
-  const id2 = useRecoilValue(imageData2);
-  const id3 = useRecoilValue(imageData3);
-  const id4 = useRecoilValue(imageData4);
+  const id1 = useRecoilValueLoadable(imageData1);
 
   const [table, setTable] = useRecoilState(popularityTable);
 
@@ -45,15 +42,13 @@ export default function ImagePreview() {
   }, []);
 
   useEffect(() => {
-    if (c1d && id1) {
-      c1c.putImageData(id1, 0, 0);
-      createPopularityTable(c1d, setTable);
-
-      if (id2) c2c.putImageData(id2, 0, 0);
-      if (id3) c3c.putImageData(id3, 0, 0);
-      if (id4) c4c.putImageData(id4, 0, 0);
-    }
-  }, [c1d]);
+    console.log(id1);
+    if (c1d && id1.state == "hasValue")
+      if (id1.getValue()) {
+        c1c.putImageData(id1.getValue(), 0, 0);
+        createPopularityTable(c1d, setTable);
+      }
+  }, [id1]);
 
   return (
     <Box style={{ minWidth: "1000px", marginTop: "150px", width: "100%" }}>

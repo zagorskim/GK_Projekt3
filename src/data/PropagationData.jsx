@@ -3,46 +3,49 @@ import { canvas2context, paletteCount, propagationAlgorithm, canvas1Data } from 
 
 export const imageData2 = selector({
   key: "imageData2",
-  get: ({ get }) => {
-    let id = null;
-    const filter =
-      get(propagationAlgorithm) == 0
-        ? FloydSteinbergFilter
-        : get(propagationAlgorithm) == 1
-        ? BurkesFilter
-        : StuckyFilter;
-    const colorCount = get(paletteCount);
-    const context = get(canvas2context);
-    let res = [];
-    if (context) {
-      id = context.createImageData(context.canvas.width, context.canvas.height);
-      let res = [...get(canvas1Data)];
+  get: async ({ get }) => {
+    function calculatePropagation() {
+      let id = null;
+      const filter =
+        get(propagationAlgorithm) == 0
+          ? FloydSteinbergFilter
+          : get(propagationAlgorithm) == 1
+          ? BurkesFilter
+          : StuckyFilter;
+      const colorCount = get(paletteCount);
+      const context = get(canvas2context);
+      if (context) {
+        id = context.createImageData(context.canvas.width, context.canvas.height);
+        let res = [...get(canvas1Data)];
 
-      for (let i = 0; i < context.canvas.height * 4; i++)
-        for (let j = 0; j < context.canvas.width; j++) {
-          {
-            let K = 0;
-            K = Approx(res[i * context.canvas.width * 4 + j], colorCount);
-            id.data[i * context.canvas.width + j] = K;
-            let err = 0;
-            err = res[i * context.canvas.width * 4 + j] - K;
+        for (let i = 0; i < context.canvas.height * 4; i++)
+          for (let j = 0; j < context.canvas.width; j++) {
+            {
+              let K = 0;
+              K = Approx(res[i * context.canvas.width * 4 + j], colorCount);
+              id.data[i * context.canvas.width + j] = K;
+              let err = 0;
+              err = res[i * context.canvas.width * 4 + j] - K;
 
-            if ((i * context.canvas.width + j) % 4 != 3) {
-              for (let k = 0; k < filter.length; k++)
-                for (let l = 0; l < filter[0].length; l++) {
-                  const offset = [
-                    (k - Math.floor(filter.length / 2)) * 4,
-                    (l - Math.floor(filter[0].length / 2)) * 4,
-                  ];
-                  if (res[(i + offset[0]) * context.canvas.width * 4 + (j + offset[1])])
-                    res[(i + offset[0]) * context.canvas.width * 4 + (j + offset[1])] +=
-                      filter[k][l] * err; //pixel offset calculated in line
-                }
+              if ((i * context.canvas.width + j) % 4 != 3) {
+                for (let k = 0; k < filter.length; k++)
+                  for (let l = 0; l < filter[0].length; l++) {
+                    const offset = [
+                      (k - Math.floor(filter.length / 2)) * 4,
+                      (l - Math.floor(filter[0].length / 2)) * 4,
+                    ];
+                    if (res[(i + offset[0]) * context.canvas.width * 4 + (j + offset[1])])
+                      res[(i + offset[0]) * context.canvas.width * 4 + (j + offset[1])] +=
+                        filter[k][l] * err; //pixel offset calculated in line
+                  }
+              }
             }
           }
-        }
+      }
+      return id;
     }
-    return id;
+    const ret = await calculatePropagation();
+    return ret;
   },
 });
 

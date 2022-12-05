@@ -1,7 +1,13 @@
 import { Box, Button, FormControlLabel, InputLabel, Radio, RadioGroup, Stack } from "@mui/material";
-import { useEffect } from "react";
-import { useRecoilState, useRecoilValue } from "recoil";
-import { canvas3context, paletteCount, popularityMode, popularityTable } from "../data/AppState";
+import { useEffect, useState } from "react";
+import { useRecoilState, useRecoilValue, useRecoilValueLoadable } from "recoil";
+import {
+  canvas3context,
+  paletteCount,
+  popularityMode,
+  popularityTable,
+  canvas1Data,
+} from "../data/AppState";
 import { imageData3 } from "../data/PopularityData";
 
 export default function Popularity() {
@@ -9,12 +15,13 @@ export default function Popularity() {
   const [c3c, setC3c] = useRecoilState(canvas3context);
   const [popTable, setPopTable] = useRecoilState(popularityTable);
   const [mode, setMode] = useRecoilState(popularityMode);
-
-  const id3 = useRecoilValue(imageData3);
+  const [c1d, setC1d] = useRecoilState(canvas1Data);
+  const id3 = useRecoilValueLoadable(imageData3);
 
   useEffect(() => {
-    if (c3c && id3) c3c.putImageData(id3, 0, 0);
-  }, [colorCount, popTable, mode]);
+    if (c1d && id3.state == "hasValue" && c3c)
+      if (id3.getValue()) c3c.putImageData(id3.getValue(), 0, 0);
+  }, [id3, colorCount, popTable, mode]);
 
   // control to change calculating mode to be added (counting channels mutually or separately)
   return (

@@ -53,17 +53,21 @@ export const popularityMode = atom({
 
 export const imageData1 = selector({
   key: "imageData1",
-  get: ({ get }) => {
-    let context = get(canvas1context);
-    let id = null;
-    if (context) {
-      id = context.createImageData(context.canvas.width, context.canvas.height);
-      let arr = get(canvas1Data);
-      for (let i = 0; i < context.canvas.height * 4; i++)
-        for (let j = 0; j < context.canvas.width; j++) {
-          id.data[i * context.canvas.width + j] = arr[i * context.canvas.width * 4 + j];
-        }
+  get: async ({ get }) => {
+    function fillImageData() {
+      let context = get(canvas1context);
+      let id = null;
+      if (context) {
+        id = context.createImageData(context.canvas.width, context.canvas.height);
+        let arr = get(canvas1Data);
+        for (let i = 0; i < context.canvas.height * 4; i++)
+          for (let j = 0; j < context.canvas.width; j++) {
+            id.data[i * context.canvas.width + j] = arr[i * context.canvas.width * 4 + j];
+          }
+      }
+      return id;
     }
-    return id;
+    const ret = await fillImageData();
+    return ret;
   },
 });
