@@ -9,8 +9,7 @@ import {
   canvas3context,
   canvas4context,
   paletteCount,
-  popularityTable,
-} from "../state/CanvasState";
+} from "../data/AppState";
 
 export default function ControlPanel() {
   const [c1c, setContext1] = useRecoilState(canvas1context);
@@ -61,18 +60,26 @@ export default function ControlPanel() {
       ).map((x) => x);
       let res = [];
       for (let i = 0; i < height * 4; i++)
-        for (let j = 0; j < width; j++)
-          res[i * 4 * width + j] =
-            imageData[i * width + j];
+        for (let j = 0; j < width; j++) res[i * 4 * width + j] = imageData[i * width + j];
       setC1d(res);
     };
     image.src = fileURL;
   }
 
   return (
-    <Box style={{padding: '1% 1%', backgroundColor: "#47515d", borderRadius: 20 }}>
+    <Box
+      style={{
+        alignItems: "center",
+        minWidth: "970px",
+        padding: "15px",
+        height: "100px",
+        backgroundColor: "#47515d",
+        borderRadius: 20,
+      }}
+    >
       <Stack spacing={3} margin="1.5%" direction="row">
         <Button
+          style={{ minWidth: "140px" }}
           onClick={loadButtonHandler}
           size="large"
           variant="contained"
@@ -80,13 +87,25 @@ export default function ControlPanel() {
         >
           Load Image
         </Button>
-        <Button size="large" variant="contained" color="error" disabled>
+        <Button
+          style={{ minWidth: "150px" }}
+          size="large"
+          variant="contained"
+          color="error"
+          disabled
+        >
           Save Results
         </Button>
-        <Button size="large" variant="contained" color="error" disabled>
+        <Button
+          style={{ minWidth: "200px" }}
+          size="large"
+          variant="contained"
+          color="error"
+          disabled
+        >
           Transform Images
         </Button>
-        <Stack width='60%'>
+        <Stack width="60%">
           <b style={{ textAlign: "center" }}>
             <label>Output palette count (each channel separately)</label>
           </b>
@@ -94,20 +113,16 @@ export default function ControlPanel() {
             defaultValue={2}
             valueLabelDisplay="auto"
             step={1}
-            marks 
+            marks
             min={2}
             max={60}
-            style={{marginLeft: '3%'}}
+            style={{ marginLeft: "3%" }}
             onChange={(e) => setColorCount(e.target.value)}
+            color="error"
           />
         </Stack>
       </Stack>
-      <input
-        style={{ display: "none" }}
-        ref={inputRef}
-        type="file"
-        onChange={loadPreprocessing}
-      />
+      <input style={{ display: "none" }} ref={inputRef} type="file" onChange={loadPreprocessing} />
     </Box>
   );
 }

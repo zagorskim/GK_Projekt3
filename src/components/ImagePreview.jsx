@@ -4,29 +4,22 @@ import { useEffect, useRef } from "react";
 import { useRecoilState, useRecoilValue } from "recoil";
 import {
   canvas1Data,
-  imageData1,
-  imageData2,
-  imageData3,
-  imageData4,
   canvas1context,
   canvas2context,
   canvas3context,
   canvas4context,
   popularityTable,
-} from "../state/CanvasState";
+  imageData1,
+} from "../data/AppState";
+import { imageData4 } from "../data/KmeansData";
+import { imageData3, createPopularityTable } from "../data/PopularityData";
+import { imageData2 } from "../data/PropagationData";
 import Kmeans from "./Kmeans";
 import Popularity from "./Popularity";
 import Propagation from "./Propagation";
 
 export default function ImagePreview() {
-  let canvas1,
-    canvas2,
-    canvas3,
-    canvas4,
-    context1,
-    context2,
-    context3,
-    context4; //to be moved to the recoil state
+  let canvas1, canvas2, canvas3, canvas4, context1, context2, context3, context4; //to be moved to the recoil state
   const [c1d, setC1d] = useRecoilState(canvas1Data);
   const [c1c, setc1c] = useRecoilState(canvas1context);
   const [c2c, setc2c] = useRecoilState(canvas2context);
@@ -63,7 +56,7 @@ export default function ImagePreview() {
   }, [c1d]);
 
   return (
-    <Box style={{marginTop: 170, width: '100%'}}>
+    <Box style={{ minWidth: "1000px", marginTop: "150px", width: "100%" }}>
       <Stack spacing={3}>
         <Box
           style={{
@@ -81,9 +74,8 @@ export default function ImagePreview() {
               marginRight: "1%",
               width: "96%",
               backgroundColor: "#c62828",
-              borderRadius: 20, 
+              borderRadius: 20,
             }}
-            
           >
             <b style={{ textAlign: "center" }}>
               <label>Original image</label>
@@ -141,35 +133,3 @@ export default function ImagePreview() {
     </Box>
   );
 }
-
-const createPopularityTable = (data, set) => {
-  const pixels = [...data];
-  let noDuplicates = [
-    { index: 1, count: 1, r: pixels[0], g: pixels[1], b: pixels[2] },
-  ];
-  let flag = false;
-  let currIndex = 2;
-  for (let i = 4; i < pixels.length; i += 4) {
-    flag = false;
-    const temp = {
-      index: currIndex,
-      count: 1,
-      r: pixels[i],
-      g: pixels[i + 1],
-      b: pixels[i + 2],
-    };
-    noDuplicates.forEach((element) => {
-      if (element.r == temp.r && element.g == temp.g && element.b == temp.b) {
-        flag = true;
-        element.count++;
-      }
-    });
-    if (flag == false && pixels[i] && pixels[i + 1] && pixels[i + 2]) {
-      noDuplicates[currIndex] = temp;
-      currIndex++;
-    }
-  }
-  set(
-    noDuplicates.sort((element1, element2) => element2.count - element1.count)
-  );
-};

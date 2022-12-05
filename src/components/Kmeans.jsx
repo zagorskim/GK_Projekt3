@@ -1,17 +1,9 @@
-import {
-  Box,
-  Button,
-  FormControlLabel,
-  InputLabel,
-  Slider,
-  Stack,
-} from "@mui/material";
+import { Box, Button, FormControlLabel, InputLabel, Slider, Stack } from "@mui/material";
 import { useEffect } from "react";
 import { useRecoilState, useRecoilValue } from "recoil";
-import { canvas4context, epsilonValue, imageData4, paletteCount, popularityTable } from "../state/CanvasState";
-
+import { canvas4context, epsilonValue, paletteCount, popularityTable } from "../data/AppState";
+import { imageData4 } from "../data/KmeansData";
 export default function Kmeans() {
-  
   const [eps, setEps] = useRecoilState(epsilonValue);
   const [colorCount, setColorCount] = useRecoilState(paletteCount);
   const [c4c, setC4c] = useRecoilState(canvas4context);
@@ -20,9 +12,8 @@ export default function Kmeans() {
   const id4 = useRecoilValue(imageData4);
 
   useEffect(() => {
-    if(c4c && id4)
-        c4c.putImageData(id4, 0, 0);
-}, [colorCount, popTable, eps])
+    if (c4c && id4) c4c.putImageData(id4, 0, 0);
+  }, [colorCount, popTable, eps]);
 
   return (
     <Stack
@@ -40,7 +31,7 @@ export default function Kmeans() {
       <b style={{ textAlign: "center" }}>
         <label>Palette reduced using k-means algorithm</label>
       </b>
-      <p/>
+      <p />
       <label style={{ textAlign: "center" }}>Epsilon value</label>
       <Slider
         defaultValue={10}
@@ -49,7 +40,9 @@ export default function Kmeans() {
         marks
         min={1}
         max={100}
-        onChange={(e) => {setEps(e.target.value)}}
+        onChange={(e) => {
+          setEps(e.target.value);
+        }}
       />
     </Stack>
   );

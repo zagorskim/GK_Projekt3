@@ -1,13 +1,8 @@
 import { Box, Button, FormControlLabel, InputLabel, Radio, RadioGroup, Stack } from "@mui/material";
 import { useEffect } from "react";
 import { useRecoilState, useRecoilValue } from "recoil";
-import {
-  canvas3context,
-  imageData3,
-  paletteCount,
-  popularityMode,
-  popularityTable,
-} from "../state/CanvasState";
+import { canvas3context, paletteCount, popularityMode, popularityTable } from "../data/AppState";
+import { imageData3 } from "../data/PopularityData";
 
 export default function Popularity() {
   const [colorCount, setColorCount] = useRecoilState(paletteCount);
@@ -30,6 +25,7 @@ export default function Popularity() {
         width: "32%",
         backgroundColor: "#c62828",
         borderRadius: 20,
+        alignItems: "center",
       }}
     >
       <b style={{ textAlign: "center" }}>
