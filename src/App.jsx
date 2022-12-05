@@ -10,8 +10,10 @@ function App() {
 
   return (
     <Box style={{margin:'2%', alignItems: 'center'}} className="App">
-      <Stack spacing={3}>
-        <ControlPanel/>
+      <Stack spacing={3} style={{alignItems: 'stretch'}}>
+        <Box position='fixed' style={{width:'96%'}}>
+          <ControlPanel/>
+        </Box>
         <ImagePreview/>
       </Stack>
     </Box>

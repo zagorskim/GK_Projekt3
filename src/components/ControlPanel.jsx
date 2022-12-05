@@ -70,7 +70,7 @@ export default function ControlPanel() {
   }
 
   return (
-    <Box style={{ backgroundColor: "#47515d", borderRadius: 20 }}>
+    <Box style={{padding: '1% 1%', backgroundColor: "#47515d", borderRadius: 20 }}>
       <Stack spacing={3} margin="1.5%" direction="row">
         <Button
           onClick={loadButtonHandler}

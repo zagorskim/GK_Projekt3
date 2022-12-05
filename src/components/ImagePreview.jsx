@@ -63,7 +63,7 @@ export default function ImagePreview() {
   }, [c1d]);
 
   return (
-    <Box>
+    <Box style={{marginTop: 170, width: '100%'}}>
       <Stack spacing={3}>
         <Box
           style={{
@@ -91,7 +91,7 @@ export default function ImagePreview() {
           </Stack>
           <canvas
             id="canvas1"
-            style={{ width: "20%", backgroundColor: "white" }} // tbd: width to be changed back to 100%
+            style={{ width: "100%", backgroundColor: "white" }} // tbd: width to be changed back to 100%
           ></canvas>
         </Box>
         <Box
