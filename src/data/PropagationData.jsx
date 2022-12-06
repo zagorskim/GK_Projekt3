@@ -1,5 +1,6 @@
 import { selector } from "recoil";
-import { canvas2context, paletteCount, propagationAlgorithm, canvas1Data } from "./AppState";
+import { canvas2context, paletteCount, propagationAlgorithm, canvas1Data, generatingMode } from "./AppState";
+import { generateUtilityClass } from '@mui/material';
 
 export const imageData2 = selector({
   key: "imageData2",
@@ -17,12 +18,17 @@ export const imageData2 = selector({
       if (context) {
         id = context.createImageData(context.canvas.width, context.canvas.height);
         let res = [...get(canvas1Data)];
-
+        const gen = get(generatingMode);
         for (let i = 0; i < context.canvas.height * 4; i++)
           for (let j = 0; j < context.canvas.width; j++) {
             {
               let K = 0;
-              K = Approx(res[i * context.canvas.width * 4 + j], colorCount);
+              if(!get(generatingMode)) {
+                K = Approx(res[i * context.canvas.width * 4 + j], colorCount);
+              }
+              else {
+                K = Approx(res[i * context.canvas.width + j], colorCount);
+              }
               id.data[i * context.canvas.width + j] = K;
               let err = 0;
               err = res[i * context.canvas.width * 4 + j] - K;
@@ -38,7 +44,7 @@ export const imageData2 = selector({
                       res[(i + offset[0]) * context.canvas.width * 4 + (j + offset[1])] +=
                         filter[k][l] * err; //pixel offset calculated in line
                   }
-              }
+            }
             }
           }
       }

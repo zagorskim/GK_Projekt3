@@ -5,16 +5,17 @@ import {
   canvas1Data,
   paletteCount,
   epsilonValue,
+  generatingMode,
 } from "./AppState";
 
 export const imageData4 = selector({
   key: "imageData4",
   get: async ({ get }) => {
+    const gen = get(generatingMode);
     function calculateKmeans() {
       let context = get(canvas4context);
       let popTable = get(popularityTable);
       let id = null;
-
       if (context && popTable.length) {
         id = context.createImageData(context.canvas.width, context.canvas.height);
         let arr = [...get(canvas1Data)];
@@ -158,11 +159,18 @@ export const imageData4 = selector({
           }
           debugCounter++;
         } while (maxChange > eps);
+        if (!gen) {
+          for (let i = 0; i < context.canvas.height * 4; i++)
+            for (let j = 0; j < context.canvas.width; j++) {
+              id.data[i * context.canvas.width + j] = res[i * context.canvas.width * 4 + j];
+            }
+        } else {
+          for (let i = 0; i < context.canvas.height * 4; i++)
+            for (let j = 0; j < context.canvas.width; j++) {
 
-        for (let i = 0; i < context.canvas.height * 4; i++)
-          for (let j = 0; j < context.canvas.width; j++) {
-            id.data[i * context.canvas.width + j] = res[i * context.canvas.width * 4 + j];
-          }
+              id.data[i * context.canvas.width + j] = res[i * context.canvas.width + j];
+            }
+        }
       }
       return id;
     }

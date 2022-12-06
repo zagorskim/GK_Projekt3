@@ -8,6 +8,7 @@ import {
   canvas2context,
   canvas3context,
   canvas4context,
+  generatingMode,
   paletteCount,
   SValue,
 } from "../data/AppState";
@@ -18,8 +19,9 @@ export default function ControlPanel() {
   const [c3c, setContext3] = useRecoilState(canvas3context);
   const [c4c, setContext4] = useRecoilState(canvas4context);
   const [c1d, setC1d] = useRecoilState(canvas1Data);
-  const [S, setS] = useRecoilState(SValue);
   const [colorCount, setColorCount] = useRecoilState(paletteCount);
+  const [S, setS] = useRecoilState(SValue);
+  const [genMode, setGenMode] = useRecoilState(generatingMode);
   const inputRef = useRef(null);
 
 const [Sval, setSval] = useState(100);
@@ -29,7 +31,6 @@ const [Sval, setSval] = useState(100);
 
   const loadPreprocessing = (e) => {
     const reader = new FileReader();
-
     reader.readAsDataURL(e.target.files[0]);
     reader.onload = function (e) {
       const image = new Image();
@@ -43,6 +44,7 @@ const [Sval, setSval] = useState(100);
   };
 
   function loadFile(fileURL, height, width) {
+    setGenMode(false);
     c1c.canvas.width = width;
     c1c.canvas.height = height;
     c2c.canvas.width = width;
@@ -62,37 +64,31 @@ const [Sval, setSval] = useState(100);
         ctx.getImageData(0, 0, c1c.canvas.width, c1c.canvas.height).data
       ).map((x) => x);
       let res = [];
-      for (let i = 0; i < height * 4; i++)
-        for (let j = 0; j < width; j++) res[i * 4 * width + j] = imageData[i * width + j];
+        for (let i = 0; i < height * 4; i++)
+          for (let j = 0; j < width; j++) 
+            res[i * 4 * width + j] = imageData[i * width + j];
       setC1d(res);
     };
     image.src = fileURL;
   }
 
 function generating() {
-  let data = [];
+  setGenMode(true);
   const height = 500;
   const width = 500;
-  for(let i = 0; i < height * 4; i++)
-    for(let j = 0; j < width; j += 4) {
-      data[i * width * 4 + j] = 255;
-      data[i * width * 4 + j + 1] = 255;
-      data[i * width * 4 + j + 2] = 255;
-      data[i * width * 4 + j + 3] = 255;
-    }
-    const canvas1 = document.getElementById("canvas1");
-    canvas1.width = 500;
-    canvas1.height = 500;
-    const canvas2 = document.getElementById("canvas2");
-    canvas2.width = 500;
-    canvas2.height = 500;
-    const canvas3 = document.getElementById("canvas3");
-    canvas3.width = 500;
-    canvas3.height = 500;
-    const canvas4 = document.getElementById("canvas4");
-    canvas4.width = 500;
-    canvas4.height = 500;
-    setC1d(data);
+  const canvas1 = document.getElementById("canvas1");
+  canvas1.width = width;
+  canvas1.height = height;
+  const canvas2 = document.getElementById("canvas2");
+  canvas2.width = width;
+  canvas2.height = height;
+  const canvas3 = document.getElementById("canvas3");
+  canvas3.width = width;
+  canvas3.height = height;
+  const canvas4 = document.getElementById("canvas4");
+  canvas4.width = width;
+  canvas4.height = height;
+  setS(S - 1);
 }
 
   return (
@@ -131,7 +127,7 @@ function generating() {
           size="large"
           variant="contained"
           color="error"
-          onClick={() => {setS(Sval); generating()}}
+          onClick={() => generating()}
         >
           Generate
         </Button>

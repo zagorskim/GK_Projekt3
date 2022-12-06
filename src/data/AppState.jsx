@@ -56,6 +56,11 @@ export const SValue = atom({
   default: 100,
 });
 
+export const generatingMode = atom({
+  key: "generatingMode",
+  default: false,
+});
+
 export const imageData1 = selector({
   key: "imageData1",
   get: async ({ get }) => {
@@ -65,10 +70,18 @@ export const imageData1 = selector({
       if (context) {
         id = context.createImageData(context.canvas.width, context.canvas.height);
         let arr = get(canvas1Data);
+        if(!get(generatingMode)) {
         for (let i = 0; i < context.canvas.height * 4; i++)
           for (let j = 0; j < context.canvas.width; j++) {
             id.data[i * context.canvas.width + j] = arr[i * context.canvas.width * 4 + j];
           }
+        }
+        else {
+          for (let i = 0; i < context.canvas.height * 4; i++)
+          for (let j = 0; j < context.canvas.width; j++) {
+            id.data[i * context.canvas.width + j] = arr[i * context.canvas.width + j];
+        }
+      }
       }
       return id;
     }

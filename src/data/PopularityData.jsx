@@ -5,11 +5,13 @@ import {
   popularityMode,
   canvas1Data,
   paletteCount,
+  generatingMode,
 } from "./AppState";
 
 export const imageData3 = selector({
   key: "imageData3",
   get: async ({ get }) => {
+    const gen = get(generatingMode);
     function calculatePopularity() {
       let context = get(canvas3context);
       const popTable = get(popularityTable);
@@ -101,13 +103,14 @@ export const imageData3 = selector({
   },
 });
 
-export const createPopularityTable = async (data, set) => {
+export const createPopularityTable = async (data, set, gen) => {
   function calculations() {
     const pixels = [...data];
     let noDuplicates = [{ index: 1, count: 1, r: pixels[0], g: pixels[1], b: pixels[2] }];
     let flag = false;
     let currIndex = 2;
     for (let i = 4; i < pixels.length; i += 4) {
+      if(gen && pixels[i] == 255 && pixels[i + 1] == 255 && pixels[i + 2] == 255) continue;
       flag = false;
       const temp = {
         index: currIndex,

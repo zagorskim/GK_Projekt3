@@ -10,6 +10,7 @@ import {
   canvas4context,
   popularityTable,
   imageData1,
+  generatingMode,
 } from "../data/AppState";
 import { imageData4 } from "../data/KmeansData";
 import { imageData3, createPopularityTable } from "../data/PopularityData";
@@ -17,7 +18,7 @@ import { imageData2 } from "../data/PropagationData";
 import Kmeans from "./Kmeans";
 import Popularity from "./Popularity";
 import Propagation from "./Propagation";
-import { paletteCount, SValue } from './../data/AppState';
+import { paletteCount, SValue } from "./../data/AppState";
 
 export default function ImagePreview() {
   let canvas1, canvas2, canvas3, canvas4; //to be moved to the recoil state
@@ -27,6 +28,7 @@ export default function ImagePreview() {
   const [c3c, setc3c] = useRecoilState(canvas3context);
   const [c4c, setc4c] = useRecoilState(canvas4context);
   const [S, setS] = useRecoilState(SValue);
+  const [genMode, setGenMode] = useRecoilState(generatingMode);
 
   const id1 = useRecoilValueLoadable(imageData1);
 
@@ -52,54 +54,53 @@ export default function ImagePreview() {
   }, [id1]);
 
   useEffect(() => {
-    generateImage();
+    if (genMode) generateImage();
   }, [S]);
 
-function generateImage() {
+  function generateImage() {
+    const r = 30;
+    const middles = [
+      { x: 250, y: 125 },
+      { x: 292, y: 166 },
+      { x: 343, y: 207 },
+      { x: 375, y: 250 },
+      { x: 343, y: 291 },
+      { x: 292, y: 332 },
+      { x: 250, y: 375 },
+      { x: 209, y: 332 },
+      { x: 168, y: 291 },
+      { x: 125, y: 250 },
+      { x: 166, y: 207 },
+      { x: 207, y: 166 },
+    ];
+    const arcs = [0, 30, 60, 90, 120, 150, 180, 210, 240, 270, 300, 330];
+    const count = middles.length;
+    const canvas = document.getElementById("canvas1");
+    const ctx = canvas.getContext("2d");
 
-  const r = 30;
-  const middles = [
-    {x: 250, y: 125}, 
-    {x: 292, y: 166}, 
-    {x: 343, y: 207}, 
-    {x: 375, y: 250}, 
-    {x: 343, y: 291}, 
-    {x: 292, y: 332}, 
-    {x: 250, y: 375}, 
-    {x: 209, y: 332}, 
-    {x: 168, y: 291}, 
-    {x: 125, y: 250}, 
-    {x: 166, y: 207}, 
-    {x: 207, y: 166}
-  ]
-  const arcs = [
-    0, 30 / 360, 60 / 360, 90 / 360, 120 / 360, 150 / 360, 180 / 360, 210 / 360, 240 / 360, 270 / 360, 300 / 360, 330 / 360
-  ]
-  const count = middles.length;
-
-
-    for(let i = 0; i < count; i++) {
-      const canvas1 = document.getElementById("canvas1");
-      const ctx = canvas1.getContext("2d");
-      const rgb = HSVtoRGB(arcs[i], S / 100, 1);
-      console.log(rgb);
+    ctx.rect(0, 0, 500, 500);
+    ctx.fillStyle = "#FFFFFF";
+    ctx.fill();
+    for (let i = 0; i < count; i++) {
+      const rgb = HSVtoRGB(arcs[i] / 360, S / 100, 1);
       const color = rgbToHex(rgb.r, rgb.g, rgb.b);
-      drawCircle(ctx, middles[i].x, middles[i].y, r, true, color, rgb, 1);
-    };
+      drawCircle(ctx, middles[i].x, middles[i].y, r, true, color, 1);
     }
+    setC1d(ctx.getImageData(0, 0, 500, 500).data);
+  }
 
   return (
     <Box style={{ minWidth: "1000px", marginTop: "150px", width: "100%" }}>
-      <Stack style={{width: '100%'}} spacing={3}>
+      <Stack style={{ width: "100%" }} spacing={3}>
         <Box
           style={{
             padding: "2%",
             backgroundColor: "#47515d",
             borderRadius: 20,
-            alignItems: 'center'
+            alignItems: "center",
           }}
         >
-          <Stack 
+          <Stack
             style={{
               padding: "2%",
               alignItems: "center",
@@ -172,7 +173,7 @@ function generateImage() {
 function HSVtoRGB(h, s, v) {
   var r, g, b, i, f, p, q, t;
   if (arguments.length === 1) {
-      s = h.s, v = h.v, h = h.h;
+    (s = h.s), (v = h.v), (h = h.h);
   }
   i = Math.floor(h * 6);
   f = h * 6 - i;
@@ -180,32 +181,44 @@ function HSVtoRGB(h, s, v) {
   q = v * (1 - f * s);
   t = v * (1 - (1 - f) * s);
   switch (i % 6) {
-      case 0: r = v, g = t, b = p; break;
-      case 1: r = q, g = v, b = p; break;
-      case 2: r = p, g = v, b = t; break;
-      case 3: r = p, g = q, b = v; break;
-      case 4: r = t, g = p, b = v; break;
-      case 5: r = v, g = p, b = q; break;
+    case 0:
+      (r = v), (g = t), (b = p);
+      break;
+    case 1:
+      (r = q), (g = v), (b = p);
+      break;
+    case 2:
+      (r = p), (g = v), (b = t);
+      break;
+    case 3:
+      (r = p), (g = q), (b = v);
+      break;
+    case 4:
+      (r = t), (g = p), (b = v);
+      break;
+    case 5:
+      (r = v), (g = p), (b = q);
+      break;
   }
   return {
-      r: Math.round(r * 255),
-      g: Math.round(g * 255),
-      b: Math.round(b * 255)
+    r: Math.round(r * 255),
+    g: Math.round(g * 255),
+    b: Math.round(b * 255),
   };
 }
 
 // Function from: https://stackoverflow.com/questions/25095548/how-to-draw-a-circle-in-html5-canvas-using-javascript
 function drawCircle(ctx, x, y, radius, fill, stroke, strokeWidth) {
-  ctx.beginPath()
-  ctx.arc(x, y, radius, 0, 2 * Math.PI, false)
+  ctx.beginPath();
+  ctx.arc(x, y, radius, 0, 2 * Math.PI, false);
   if (fill) {
-    ctx.fillStyle = hexToRgb('#295734')
-    ctx.fill()
+    ctx.fillStyle = stroke;
+    ctx.fill();
   }
   if (stroke) {
-    ctx.lineWidth = strokeWidth
-    ctx.strokeStyle = stroke
-    ctx.stroke()
+    ctx.lineWidth = strokeWidth;
+    ctx.strokeStyle = stroke;
+    ctx.stroke();
   }
 }
 
@@ -222,9 +235,11 @@ function rgbToHex(r, g, b) {
 
 function hexToRgb(hex) {
   var result = /^#?([a-f\d]{2})([a-f\d]{2})([a-f\d]{2})$/i.exec(hex);
-  return result ? {
-    r: parseInt(result[1], 16),
-    g: parseInt(result[2], 16),
-    b: parseInt(result[3], 16)
-  } : null;
+  return result
+    ? {
+        r: parseInt(result[1], 16),
+        g: parseInt(result[2], 16),
+        b: parseInt(result[3], 16),
+      }
+    : null;
 }
