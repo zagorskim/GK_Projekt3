@@ -19,3 +19,4 @@ Po uruchomianiu serwera deweloperskiego na terminalu pojawi się adres i port, p
 * Algorytm popularnościowy ma zaimplementowane obie opcje traktowania kanałów barw
 * Algorytm k-średnich zawsze traktuje jedną barwę jako trzy składowe
 * Do porównywania efektywności algorytmów zaleca się wybieranie obrazów testowych w odcieniach szarości, wtedy górny suwak określa rzeczywistą liczbę koloró na grafice wyjściowej
+* Inicjalizacja załadowanych grafik może trwać kilkadziesiąt sekund z uwagi na zastosowany preprocessing
