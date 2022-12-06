@@ -43,7 +43,6 @@ export default function ImagePreview() {
   }, []);
 
   useEffect(() => {
-    console.log(c1d);
     if (c1d && id1.state == "hasValue")
       if (id1.getValue()) {
         c1c.putImageData(id1.getValue(), 0, 0);
