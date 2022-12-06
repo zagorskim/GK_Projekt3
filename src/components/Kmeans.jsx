@@ -39,7 +39,7 @@ export default function Kmeans() {
         valueLabelDisplay="auto"
         step={5}
         marks
-        min={1}
+        min={10}
         max={100}
         onChange={(e) => {
           setEps(e.target.value);

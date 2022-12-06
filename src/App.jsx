@@ -11,7 +11,7 @@ function App() {
   return (
     <Box style={{margin:'2%', alignItems: 'center'}} className="App">
       <Stack spacing={3} style={{alignItems: 'stretch'}}>
-        <Box position='fixed' style={{width:'96%'}}>
+        <Box position='fixed' style={{width:'96%', alignItems: 'center'}}>
           <ControlPanel/>
         </Box>
         <ImagePreview/>

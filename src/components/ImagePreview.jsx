@@ -17,6 +17,7 @@ import { imageData2 } from "../data/PropagationData";
 import Kmeans from "./Kmeans";
 import Popularity from "./Popularity";
 import Propagation from "./Propagation";
+import { paletteCount } from './../data/AppState';
 
 export default function ImagePreview() {
   let canvas1, canvas2, canvas3, canvas4, context1, context2, context3, context4; //to be moved to the recoil state
@@ -25,7 +26,7 @@ export default function ImagePreview() {
   const [c2c, setc2c] = useRecoilState(canvas2context);
   const [c3c, setc3c] = useRecoilState(canvas3context);
   const [c4c, setc4c] = useRecoilState(canvas4context);
-
+  const [colorCount, setColorCount] = useRecoilState(paletteCount);
   const id1 = useRecoilValueLoadable(imageData1);
 
   const [table, setTable] = useRecoilState(popularityTable);
@@ -42,7 +43,7 @@ export default function ImagePreview() {
   }, []);
 
   useEffect(() => {
-    console.log(id1);
+    console.log(c1d);
     if (c1d && id1.state == "hasValue")
       if (id1.getValue()) {
         c1c.putImageData(id1.getValue(), 0, 0);
@@ -52,15 +53,16 @@ export default function ImagePreview() {
 
   return (
     <Box style={{ minWidth: "1000px", marginTop: "150px", width: "100%" }}>
-      <Stack spacing={3}>
+      <Stack style={{width: '100%'}} spacing={3}>
         <Box
           style={{
             padding: "2%",
             backgroundColor: "#47515d",
             borderRadius: 20,
+            alignItems: 'center'
           }}
         >
-          <Stack
+          <Stack 
             style={{
               padding: "2%",
               alignItems: "center",
