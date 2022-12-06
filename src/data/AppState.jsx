@@ -51,6 +51,11 @@ export const popularityMode = atom({
   default: {},
 });
 
+export const SValue = atom({
+  key: "SValue",
+  default: 100,
+});
+
 export const imageData1 = selector({
   key: "imageData1",
   get: async ({ get }) => {

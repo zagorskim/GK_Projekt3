@@ -1,4 +1,4 @@
-import { Box, Button } from "@mui/material";
+import { Box, Button, generateUtilityClass } from "@mui/material";
 import { Stack } from "@mui/system";
 import { useEffect, useRef } from "react";
 import { useRecoilState, useRecoilValue, useRecoilValueLoadable } from "recoil";
@@ -17,16 +17,17 @@ import { imageData2 } from "../data/PropagationData";
 import Kmeans from "./Kmeans";
 import Popularity from "./Popularity";
 import Propagation from "./Propagation";
-import { paletteCount } from './../data/AppState';
+import { paletteCount, SValue } from './../data/AppState';
 
 export default function ImagePreview() {
-  let canvas1, canvas2, canvas3, canvas4, context1, context2, context3, context4; //to be moved to the recoil state
+  let canvas1, canvas2, canvas3, canvas4; //to be moved to the recoil state
   const [c1d, setC1d] = useRecoilState(canvas1Data);
   const [c1c, setc1c] = useRecoilState(canvas1context);
   const [c2c, setc2c] = useRecoilState(canvas2context);
   const [c3c, setc3c] = useRecoilState(canvas3context);
   const [c4c, setc4c] = useRecoilState(canvas4context);
-  const [colorCount, setColorCount] = useRecoilState(paletteCount);
+  const [S, setS] = useRecoilState(SValue);
+
   const id1 = useRecoilValueLoadable(imageData1);
 
   const [table, setTable] = useRecoilState(popularityTable);
@@ -49,6 +50,43 @@ export default function ImagePreview() {
         createPopularityTable(c1d, setTable);
       }
   }, [id1]);
+
+  useEffect(() => {
+    generateImage();
+  }, [S]);
+
+function generateImage() {
+
+  const r = 5;
+  const middles = [
+    {x: 250, y: 125}, 
+    {x: 292, y: 166}, 
+    {x: 343, y: 207}, 
+    {x: 375, y: 250}, 
+    {x: 343, y: 291}, 
+    {x: 292, y: 332}, 
+    {x: 250, y: 375}, 
+    {x: 209, y: 332}, 
+    {x: 168, y: 291}, 
+    {x: 125, y: 250}, 
+    {x: 166, y: 207}, 
+    {x: 207, y: 166}
+  ]
+  const arcs = [
+    0, 30 / 360, 60 / 360, 90 / 360, 120 / 360, 150 / 360, 180 / 360, 210 / 360, 240 / 360, 270 / 360, 300 / 360, 330 / 360
+  ]
+  const count = middles.length;
+
+
+    for(let i = 0; i < count; i++) {
+      const canvas1 = document.getElementById("canvas1");
+      const ctx = canvas1.getContext("2d");
+      const rgb = HSVtoRGB(arcs[i], S / 100, 1);
+      console.log(rgb);
+      const color = rgbToHex(rgb.r, rgb.g, rgb.b);
+      drawCircle(ctx, middles[i].x / 5, middles[i].y / 5, r, true, color, rgb, 1);
+    };
+    }
 
   return (
     <Box style={{ minWidth: "1000px", marginTop: "150px", width: "100%" }}>
@@ -128,4 +166,65 @@ export default function ImagePreview() {
       </Stack>
     </Box>
   );
+}
+
+// Function from: https://stackoverflow.com/questions/17242144/javascript-convert-hsb-hsv-color-to-rgb-accurately
+function HSVtoRGB(h, s, v) {
+  var r, g, b, i, f, p, q, t;
+  if (arguments.length === 1) {
+      s = h.s, v = h.v, h = h.h;
+  }
+  i = Math.floor(h * 6);
+  f = h * 6 - i;
+  p = v * (1 - s);
+  q = v * (1 - f * s);
+  t = v * (1 - (1 - f) * s);
+  switch (i % 6) {
+      case 0: r = v, g = t, b = p; break;
+      case 1: r = q, g = v, b = p; break;
+      case 2: r = p, g = v, b = t; break;
+      case 3: r = p, g = q, b = v; break;
+      case 4: r = t, g = p, b = v; break;
+      case 5: r = v, g = p, b = q; break;
+  }
+  return {
+      r: Math.round(r * 255),
+      g: Math.round(g * 255),
+      b: Math.round(b * 255)
+  };
+}
+
+// Function from: https://stackoverflow.com/questions/25095548/how-to-draw-a-circle-in-html5-canvas-using-javascript
+function drawCircle(ctx, x, y, radius, fill, stroke, strokeWidth) {
+  ctx.beginPath()
+  ctx.arc(x, y, radius, 0, 2 * Math.PI, false)
+  if (fill) {
+    ctx.fillStyle = hexToRgb('#295734')
+    ctx.fill()
+  }
+  if (stroke) {
+    ctx.lineWidth = strokeWidth
+    ctx.strokeStyle = stroke
+    ctx.stroke()
+  }
+}
+
+// Functions from https://stackoverflow.com/questions/5623838/rgb-to-hex-and-hex-to-rgb
+
+function componentToHex(c) {
+  var hex = c.toString(16);
+  return hex.length == 1 ? "0" + hex : hex;
+}
+
+function rgbToHex(r, g, b) {
+  return "#" + componentToHex(r) + componentToHex(g) + componentToHex(b);
+}
+
+function hexToRgb(hex) {
+  var result = /^#?([a-f\d]{2})([a-f\d]{2})([a-f\d]{2})$/i.exec(hex);
+  return result ? {
+    r: parseInt(result[1], 16),
+    g: parseInt(result[2], 16),
+    b: parseInt(result[3], 16)
+  } : null;
 }

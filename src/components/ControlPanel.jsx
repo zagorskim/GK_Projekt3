@@ -1,6 +1,6 @@
 import { Button, Slider } from "@mui/material";
 import { Box, Stack } from "@mui/system";
-import { useRef } from "react";
+import { useRef, useState } from "react";
 import { useRecoilState } from "recoil";
 import {
   canvas1context,
@@ -9,6 +9,7 @@ import {
   canvas3context,
   canvas4context,
   paletteCount,
+  SValue,
 } from "../data/AppState";
 
 export default function ControlPanel() {
@@ -17,9 +18,11 @@ export default function ControlPanel() {
   const [c3c, setContext3] = useRecoilState(canvas3context);
   const [c4c, setContext4] = useRecoilState(canvas4context);
   const [c1d, setC1d] = useRecoilState(canvas1Data);
+  const [S, setS] = useRecoilState(SValue);
   const [colorCount, setColorCount] = useRecoilState(paletteCount);
   const inputRef = useRef(null);
 
+const [Sval, setSval] = useState(100);
   const loadButtonHandler = () => {
     inputRef.current.click();
   };
@@ -66,6 +69,32 @@ export default function ControlPanel() {
     image.src = fileURL;
   }
 
+function generating() {
+  let data = [];
+  const height = 500;
+  const width = 500;
+  for(let i = 0; i < height * 4; i++)
+    for(let j = 0; j < width; j += 4) {
+      data[i * width * 4 + j] = 0;
+      data[i * width * 4 + j + 1] = 255;
+      data[i * width * 4 + j + 2] = 255;
+      data[i * width * 4 + j + 3] = 255;
+    }
+    const canvas1 = document.getElementById("canvas1");
+    canvas1.width = 500;
+    canvas1.height = 500;
+    const canvas2 = document.getElementById("canvas2");
+    canvas2.width = 500;
+    canvas2.height = 500;
+    const canvas3 = document.getElementById("canvas3");
+    canvas3.width = 500;
+    canvas3.height = 500;
+    const canvas4 = document.getElementById("canvas4");
+    canvas4.width = 500;
+    canvas4.height = 500;
+    setC1d(data);
+}
+
   return (
     <Box
       style={{
@@ -96,15 +125,28 @@ export default function ControlPanel() {
         >
           Save Results
         </Button>
+        <Stack>
         <Button
           style={{ minWidth: "200px" }}
           size="large"
           variant="contained"
           color="error"
-          disabled
+          onClick={() => {setS(Sval); generating()}}
         >
-          Transform Images
+          Generate
         </Button>
+        <Slider
+            defaultValue={100}
+            valueLabelDisplay="auto"
+            step={5}
+            marks
+            min={1}
+            max={100}
+            style={{ marginLeft: "3%" }}
+            onChange={(e) => setS(e.target.value)}
+            color="error"
+          />
+        </Stack>
         <Stack width="60%">
           <b style={{ textAlign: "center" }}>
             <label>Output palette count (each channel separately)</label>
