@@ -75,7 +75,7 @@ function generating() {
   const width = 500;
   for(let i = 0; i < height * 4; i++)
     for(let j = 0; j < width; j += 4) {
-      data[i * width * 4 + j] = 0;
+      data[i * width * 4 + j] = 255;
       data[i * width * 4 + j + 1] = 255;
       data[i * width * 4 + j + 2] = 255;
       data[i * width * 4 + j + 3] = 255;

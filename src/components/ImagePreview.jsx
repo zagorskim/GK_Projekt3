@@ -57,7 +57,7 @@ export default function ImagePreview() {
 
 function generateImage() {
 
-  const r = 5;
+  const r = 30;
   const middles = [
     {x: 250, y: 125}, 
     {x: 292, y: 166}, 
@@ -84,7 +84,7 @@ function generateImage() {
       const rgb = HSVtoRGB(arcs[i], S / 100, 1);
       console.log(rgb);
       const color = rgbToHex(rgb.r, rgb.g, rgb.b);
-      drawCircle(ctx, middles[i].x / 5, middles[i].y / 5, r, true, color, rgb, 1);
+      drawCircle(ctx, middles[i].x, middles[i].y, r, true, color, rgb, 1);
     };
     }
 
